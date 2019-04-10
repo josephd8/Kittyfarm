@@ -1,4 +1,6 @@
-# Example project repository
+# ICOspy
+
+#### The first stop for ICO research.
 
 <!-- toc -->
 
@@ -31,13 +33,36 @@ ICOs can be an intriguing investment option, but building up the knowledge (and 
 
 **Value Prop**: As time moves on, Pre-ICO's will go live and become live ICO's and new Pre-ICO's will appear. ICOspy will dynamically capture these changes and become even smarter at ranking Pre-ICO's. ICOspy will measure it's actual value by assessing the number of rankings generated, as well as the number of rankings exported (either via email or SMS). Again, ICOspy delivers value as new people come to start their ICOspy research, or as users return to re-generate new rankings to dive back into research.
 
-## Backlog
+#### Epics
+* API - Assessment of features/data available from the Zloadr API on both Pre-ICO's and ICO's.
+* Data - Development of dynamic (with time) training, testing, and validation datasets.
+* Model - Development of supervised prediction models to rank Pre-ICO's by promise.
+* App - Implementation of App to deliver Pre-ICO rankings with speed, efficiency, and ease.
+
+#### Backlog
+* (API) - establish API connection via Python (1)
+* (API) - make initial calls to query for sample data (0)
+* (API) - determine strategy to call for all needed data without exceeding API limits (2)
+* (API) - write script to query all needed data that can be used dynamically through time (4)
+* (Data) - build sample training, testing, and prediction sets from query results (2)
+* (Model) - exploratory data analysis to aid in Feature Engineering (1)
+* (App) - set up Flask app environment (4)
+* (Data) - write script that will build datasets dynamically through time (4)
+* (Model) - develop CV approach to test methods against MAP (2)
+* (Model) - build Random Forest Model to predict Pre-Ico DDS (2)
+* (Model) - build Gradient-Boosted Tree to predict Pre-Ico DDS (2)
+* (App) - develop UI to generate rankings (4)
+* (Model) - test models in CV (4)
+* (Model) - productionize final models (4)
+* (App) - develop functionality to export results via email or SMS (4)
+
+#### Icebox
+* (App) - develop UI to show basic info/summaries on Pre-ICO’s in rankings
+* (App) - add summary info on the ICO market as a whole
+* (API) - supplement data with pricing data on ICO’s from a different API (in order to stay below API limits)
+* (Model) - explore ranking algorithms rather than prediction algorithms which will then be ranked
 
 
-## Icebox
-
-
-_Note_: Project charters should actually be more detailed than this! But this is where the charter belongs.  
 
 ## Repo structure 
 

@@ -18,11 +18,13 @@
 
 ## Project Charter 
 
-**Vision**: To enable animals everywhere to enjoy music just for them. 
+**Vision**: To assist beginner cryptos in their ICO research. 
 
-**Mission**: Enable users to add songs that they like and produce new song recommendations based on their entries.
+**Mission**: ICOs can be an intriguing investment option, but building up the knowledge (and possibly courage) to participate can be difficult. ICOspy aims to be a first stop for beginners looking to research ICO's. The goal of ICOspy is to provide a list of current Pre-ICOs ranked by promise. Doing so will help beginners know which ICO's to begin researching further.
 
-**Success criteria**: Users play 80% of recommended songs more than once. 
+**Success criteria**:
+****Machine Learning****:
+****Value Prop****: 
 
 
 _Note_: Project charters should actually be more detailed than this! But this is where the charter belongs.  

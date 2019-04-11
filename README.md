@@ -22,7 +22,7 @@
 
 ### Vision
 
-To assist beginner CryptoKitties owners in building their kitty farm. 
+To assist beginner CryptoKitties owners in building their kitty farm. (https://www.cryptokitties.co/)
 
 ### Mission
 Cryptokitties is a blockchain-based game that allows players to purchase, collect, breed, and sell virtual cats. While some people play purely for the novelty of discovering new mutations (appropriately named "mewtations") and breeding a pool of their very own kitties, others play CryptoKitties in an effort to earn money by making breeding decisions that produce a kitty that is more valuable than the input needed to breed. Whatever the reason, Kittyfarm will help new entrants to CryptoKitties by providing a predicted value for a kitty with any given gene set. 

@@ -1,6 +1,6 @@
-# ICOspy
+# Kittyfarm
 
-#### The first stop for ICO research.
+#### A (Crypto)Kitty value predictor.
 
 <!-- toc -->
 

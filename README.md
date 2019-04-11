@@ -34,9 +34,9 @@ Cryptokitties is a blockchain-based game that allows players to purchase, collec
 **Value Prop**: Kittyfarm's value lies in its ability to give new users a feel for what gene's and combinations are most valuable in CryptoKitties. It will also give users a platform to help with their breeding decisions as they try and assess which genes are most important to bring into their farm. Kittyfarm seeks to help any beginner CryptoKitties owner to find more joy in their litter, and also more value in their kitty farm. As a whole, # of unique users, # of re-visits, and # of predictions generated are the main metrics that signal whether Kittyfarm is delivering this value.
 
 #### Themes
-* Focus on real-time, accurate, clean data as the engine
-* Generate valuable, actionable predictions/insight 
-* Provide top-tier user experience
+* Data as Engine - Focus on real-time, accurate, clean data as the engine
+* Valuable Predictions - Generate valuable, actionable predictions/insight 
+* Top-Tier UX - Provide top-tier user experience
 
 #### Epics
 * (Data as Engine) API - Assessment of features/data available from the CryptoKitties API.

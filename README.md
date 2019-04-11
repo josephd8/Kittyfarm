@@ -45,15 +45,17 @@ Cryptokitties is a blockchain-based game that allows players to purchase, collec
 * (Top-Tier UX) App - Implementation of App to enable user to input gene set and generate prediction.
 
 #### Backlog
-* (API) - configure Kittyverse developer account and Kittyfarm Dapp. (1) 
-* (API) - establish API connection via Python (1)
-* (API) - make initial calls to query for sample data (0)
-* (API) - determine strategy to call for all needed data without exceeding API limits (2)
-* (API) - write script to query all needed data that can be used dynamically through time (4)
-* (Data) - build sample training, testing, and validation sets from query results (2)
-* (Model) - exploratory data analysis to aid in Feature Engineering (1)
-* (App) - set up Flask app environment (4)
-* (Data) - write script that will build datasets dynamically through time (4)
+* (API) - configure Kittyverse developer account and Kittyfarm Dapp. (1) - PLANNED
+* (API) - establish API connection via Python (1) - PLANNED
+* (API) - make initial calls to query for sample data (0) - PLANNED
+* (API) - determine strategy to call for all needed data without exceeding API limits (2) - PLANNED
+* (API) - write script to query all needed data that can be used dynamically through time (4) - PLANNED
+* (Data) - build sample training, testing, and validation sets from query results (2) - PLANNED
+* (Data) - configure RDS instance to store data sets (2) - PLANNED
+* (Data) - explore the need for S3 instance to relay data from API to RDS (1) - PLANNED
+* (App) - set up Flask app environment (4) - PLANNED
+* (Model) - exploratory data analysis to aid in Feature Engineering (1) - PLANNED
+* (Data) - write script that will build datasets dynamically through time (4) - PLANNED
 * (Model) - develop CV approach to test methods against RMSE (2)
 * (Model) - build Random Forest Model to predict Kitty price (2)
 * (Model) - build Gradient-Boosted Tree to predict Kitty price (2)

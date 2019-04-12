@@ -1,6 +1,6 @@
 # Kittyfarm
 
-#### A (Crypto)Kitty value predictor.
+#### A (Crypto)Kitty gene & value predictor.
 
 <!-- toc -->
 
@@ -22,16 +22,22 @@
 
 ### Vision
 
-To assist beginner CryptoKitties owners in building their kitty farm. (https://www.cryptokitties.co/)
+Cryptokitties is a blockchain-based game that allows players to purchase, collent, breed, and sell virtual cats.
+
+Kittyfarm will live assist beginner CryptoKitties owners in building their kitty "farm". (https://www.cryptokitties.co/)
 
 ### Mission
-Cryptokitties is a blockchain-based game that allows players to purchase, collect, breed, and sell virtual cats. While some people play purely for the novelty of discovering new mutations (appropriately named "mewtations") and breeding a pool of their very own kitties, others play CryptoKitties in an effort to earn money by making breeding decisions that produce a kitty that is more valuable than the input needed to breed. Whatever the reason, Kittyfarm will help new entrants to CryptoKitties by providing a predicted value for a kitty with any given gene set. 
+Kitty owners have an opportunity to build the value of their litter through breeding, but what breeding decisions are most likely to introduce valuable mutatuions and gene sets, thus increasing the litter value?
+
+Kittyfarm will give owners the ability to simulate the breeding of two cats and view the probabilities of given genes. Kitty farm will also take those gene probabilities to infer an "expected value" of the new baby kitten. These core functionalities of Kittyfarm will help kitty owners make the right tradeoffs between cost of breeding and potential value increases through breeding.
 
 ### Success criteria
 
-**Machine Learning**: The supervised models will be tasked with predicting a kitty's price (value) at any point and time. These prices fluctuate depending on the kitty market. Kittyfarm will use RMSE to evaluate models in their ability to correctly predict price. An RMSE of 2 ($2 USD) is the beginning line in the sand. This will likely need adjusted as Kittyfarm progresses as it may be more accurate for lower priced kitties (because there are so many), and less accurate for high-end (outlier) kitties.
+**Machine Learning**: The supervised models will be tasked with taking a mother cat and a sire (father) and essentially predicting the genome of the baby kitten. Predicting kitten genomes will enable Kittyfarm to show the traits that a kitten is most likely to inherit. Utilitizing 400k+ breeding instances, Kittyfarm will test the accuracy of models based on % of correct Cattributes (as they are called.) A relative service, CryptoBreeder.net, claims to achieve 94% accuracy in this metric. Thus, Kittyfarm will seek to achieve a correct Cattribute prediction rate of 95%.
 
-**Value Prop**: Kittyfarm's value lies in its ability to give new users a feel for what gene's and combinations are most valuable in CryptoKitties. It will also give users a platform to help with their breeding decisions as they try and assess which genes are most important to bring into their farm. Kittyfarm seeks to help any beginner CryptoKitties owner to find more joy in their litter, and also more value in their kitty farm. As a whole, # of unique users, # of re-visits, and # of predictions generated are the main metrics that signal whether Kittyfarm is delivering this value.
+And Kittyfarm will not stop there! With the probabilities of genes from a simulated breed, Kitty farm will create every possibility of baby kitten that could be created with those possible genes. Then, Kittyfarm will cross-check those potential kittens against the data itself to derive expected values, which will be weighted by likelihood and then aggregated to provide an overall expected value of the new baby kitten.
+
+**Business**: Kittyfarm aims to provide real value to owners by helping them turn their breeding decisions into Ether (the cryptocurrency that powers CryptoKitties). From a usage perspective, the target metrics are 100 new users per month, 50% of users make a re-visit, and 1000 simulations generated per month. From a monetary perspective, Kittyfarm can assess real value by how willing users are to donate Ether in the form of tips to my Ether wallet. The monetary target metric is .061 Ether/month (currently $10 USD).
 
 #### Themes
 * Data as Engine - Focus on real-time, accurate, clean data as the engine
@@ -41,14 +47,15 @@ Cryptokitties is a blockchain-based game that allows players to purchase, collec
 #### Epics
 * (Data as Engine) API - Assessment of features/data available from the CryptoKitties API.
 * (Data as Engine) Data - Development of dynamic (with time) training, testing, and validation datasets.
-* (Data as Engine, Valuable Predictions) Model - Development of supervised prediction models to predict a kitty's price based on it's gene set.
+* (Data as Engine, Valuable Predictions) Model - Development of supervised prediction models to predict a baby kitten's genome.
 * (Top-Tier UX) App - Implementation of App to enable user to input gene set and generate prediction.
 
 #### Backlog
 * (API) - configure Kittyverse developer account and Kittyfarm Dapp. (1) - PLANNED
 * (API) - establish API connection via Python (1) - PLANNED
 * (API) - make initial calls to query for sample data (0) - PLANNED
-* (API) - determine strategy to call for all needed data without exceeding API limits (2) - PLANNED
+* (Data) - determine all needed data from CryptoKitties API (2) - PLANNED
+* (Data) - model data for RDS (4) - PLANNED
 * (API) - write script to query all needed data that can be used dynamically through time (4) - PLANNED
 * (Data) - build sample training, testing, and validation sets from query results (2) - PLANNED
 * (Data) - configure RDS instance to store data sets (2) - PLANNED
@@ -56,10 +63,8 @@ Cryptokitties is a blockchain-based game that allows players to purchase, collec
 * (App) - set up Flask app environment (4) - PLANNED
 * (Model) - exploratory data analysis to aid in Feature Engineering (1) - PLANNED
 * (Data) - write script that will build datasets dynamically through time (4) - PLANNED
-* (Model) - develop CV approach to test methods against RMSE (2)
-* (Model) - build Random Forest Model to predict Kitty price (2)
-* (Model) - build Gradient-Boosted Tree to predict Kitty price (2)
-* (Model) - build Neural-Network to predict Kitty price (2)
+* (Model) - explore potential models for genome prediction (8)
+* (Model) - develop CV approach to test methods (2) 
 * (App) - develop UI to input Kitty gene set (4)
 * (Model) - test models in CV (4)
 * (Model) - productionize final models (4)

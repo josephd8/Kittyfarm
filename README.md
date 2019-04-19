@@ -2,6 +2,9 @@
 
 #### A (Crypto)Kitty gene & value predictor.
 
+Developer: JD Cook
+QA: Jonathan Lewyckyj
+
 <!-- toc -->
 
 - [Project Charter](#project-charter)

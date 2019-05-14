@@ -1,10 +1,13 @@
-import datetime
+from datetime import datetime
+import random
 from app import db
 from app.models import Kitty
 import argparse
 import logging.config
 logger = logging.getLogger(__name__)
 
+tmp_date = datetime(2019, 6, 8, 3, 53, 11)
+random_id = random.randint(1,10000001)
 
 def create_db(args):
     """Creates a database with the data model given by obj:`apps.models.Kitty`
@@ -41,7 +44,7 @@ def create_db(args):
         pattern = args.pattern,
         colorprimary = args.colorprimary,
         colorsecondary = args.colorsecondary,
-        colortertiary = args.tertiary,
+        colortertiary = args.colortertiary,
         coloreyes = args.coloreyes,
         mother_id = args.mother_id,
         mother_fancy = args.mother_fancy,
@@ -96,7 +99,7 @@ def add_kitty(args):
         pattern = args.pattern,
         colorprimary = args.colorprimary,
         colorsecondary = args.colorsecondary,
-        colortertiary = args.tertiary,
+        colortertiary = args.colortertiary,
         coloreyes = args.coloreyes,
         mother_id = args.mother_id,
         mother_fancy = args.mother_fancy,
@@ -129,7 +132,7 @@ if __name__ == '__main__':
     sb_create.add_argument("--id", default=0, help="id of kitty")
     sb_create.add_argument("--name", default="OG", help="name of kitty")
     sb_create.add_argument("--generation", default=0, help="generation of kitty")
-    sb_create.add_argument("--birthday", default=datetime.datetime.utcnow, help="birthdate of kitty")
+    sb_create.add_argument("--birthday", default=tmp_date, help="birthdate of kitty")
     sb_create.add_argument("--color", default="gold", help="main color of kitty")
     sb_create.add_argument("--fancy", default=True, help="fancy status of kitty")
     sb_create.add_argument("--exclusive", default=True, help="exclusive status of kitty")
@@ -159,8 +162,8 @@ if __name__ == '__main__':
     sb_create.add_argument("--start_price", default=10000000, help="start price for kitty on auction")
     sb_create.add_argument("--end_price", default=10000000, help="end price for kitty on auction")
     sb_create.add_argument("--current_price", default=10000000, help="current price for kitty on auction")
-    sb_create.add_argument("--auction_start", default=datetime.datetime.utcnow, help="auction start for kitty")
-    sb_create.add_argument("--auction_end", default=datetime.datetime.utcnow, help="auction end for kitty")
+    sb_create.add_argument("--auction_start", default=tmp_date, help="auction start for kitty")
+    sb_create.add_argument("--auction_end", default=tmp_date, help="auction end for kitty")
     sb_create.add_argument("--auction_duration", default=1111111, help="auction duration for kitty")
     sb_create.add_argument("--auction_type", default="sale", help="auction type (sale or sire) for kitty")
 
@@ -169,10 +172,10 @@ if __name__ == '__main__':
     # Sub-parser for ingesting new data
     sb_ingest = subparsers.add_parser("ingest", description="Add kitty to database")
 
-    sb_ingest.add_argument("--id", default=0, help="id of kitty")
+    sb_ingest.add_argument("--id", default=random_id, help="id of kitty")
     sb_ingest.add_argument("--name", default="OG", help="name of kitty")
     sb_ingest.add_argument("--generation", default=0, help="generation of kitty")
-    sb_ingest.add_argument("--birthday", default=datetime.datetime.utcnow, help="birthdate of kitty")
+    sb_ingest.add_argument("--birthday", default=tmp_date, help="birthdate of kitty")
     sb_ingest.add_argument("--color", default="gold", help="main color of kitty")
     sb_ingest.add_argument("--fancy", default=True, help="fancy status of kitty")
     sb_ingest.add_argument("--exclusive", default=True, help="exclusive status of kitty")
@@ -202,8 +205,8 @@ if __name__ == '__main__':
     sb_ingest.add_argument("--start_price", default=10000000, help="start price for kitty on auction")
     sb_ingest.add_argument("--end_price", default=10000000, help="end price for kitty on auction")
     sb_ingest.add_argument("--current_price", default=10000000, help="current price for kitty on auction")
-    sb_ingest.add_argument("--auction_start", default=datetime.datetime.utcnow, help="auction start for kitty")
-    sb_ingest.add_argument("--auction_end", default=datetime.datetime.utcnow, help="auction end for kitty")
+    sb_ingest.add_argument("--auction_start", default=tmp_date, help="auction start for kitty")
+    sb_ingest.add_argument("--auction_end", default=tmp_date, help="auction end for kitty")
     sb_ingest.add_argument("--auction_duration", default=1111111, help="auction duration for kitty")
     sb_ingest.add_argument("--auction_type", default="sale", help="auction type (sale or sire) for kitty")
 

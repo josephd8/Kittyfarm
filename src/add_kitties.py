@@ -1,30 +1,126 @@
-"""Enables the command line execution of multiple modules within src/
-
-This module combines the argparsing of each module within src/ and enables the execution of the corresponding scripts
-so that all module imports can be absolute with respect to the main project directory.
-
-Current commands enabled:
-
-To create a database for Tracks with an initial song:
-
-    `python run.py create --artist="Britney Spears" --title="Radar" --album="Circus"`
-
-To add a song to an already created database:
-
-    `python run.py ingest --artist="Britney Spears" --title="Radar" --album="Circus"`
-"""
 import datetime
+from app import db
+from app.models import Kitty
 import argparse
 import logging.config
-logging.config.fileConfig("config/logging/local.conf")
-logger = logging.getLogger("run-penny-lane")
+logger = logging.getLogger(__name__)
 
-from src.add_kitties import create_db, add_kitty
+
+def create_db(args):
+    """Creates a database with the data model given by obj:`apps.models.Kitty`
+
+    Args:
+        args: Argparse args - should include ...
+
+    Returns: None
+
+    """
+
+    db.create_all()
+
+    kitty = Kitty(
+        id = args.id, 
+        name = args.name,
+        generation = args.generation,
+        birthday = args.birthday,
+        color = args.color,
+        fancy = args.fancy,
+        fancy_type = args.fancy_type,
+        exclusive = args.exclusive,
+        cooldown = args.cooldown,
+        purrs = args.purrs,
+        watches = args.watches,
+        hatched = args.hatched,
+        prestige = args.prestige,
+        prestige_type = args.prestige_type,
+        prestige_ranking = args.prestige_ranking,
+        fancy_ranking = args.fancy_ranking,
+        body = args.body,
+        mouth = args.mouth,
+        eyes = args.eyes,
+        pattern = args.pattern,
+        colorprimary = args.colorprimary,
+        colorsecondary = args.colorsecondary,
+        colortertiary = args.tertiary,
+        coloreyes = args.coloreyes,
+        mother_id = args.mother_id,
+        mother_fancy = args.mother_fancy,
+        mother_exclusive = args.mother_exclusive,
+        father_id = args.father_id,
+        father_fancy = args.father_fancy,
+        father_exclusive = args.father_exclusive,
+        start_price = args.start_price,
+        end_price = args.end_price,
+        current_price = args.current_price,
+        auction_type = args.auction_type,
+        auction_start = args.auction_start,
+        auction_end = args.auction_end,
+        auction_duration = args.auction_duration
+    )
+    db.session.add(kitty)
+    db.session.commit()
+    logger.info("Kitty database created.")
+    logger.info("%s added to database", args.name)
+
+
+def add_kitty(args):
+    """Seeds an existing database with additional songs.
+
+    Args:
+        args: Argparse args - should include ...
+
+    Returns:None
+
+    """
+
+    kitty = Kitty(
+        id = args.id, 
+        name = args.name,
+        generation = args.generation,
+        birthday = args.birthday,
+        color = args.color,
+        fancy = args.fancy,
+        fancy_type = args.fancy_type,
+        exclusive = args.exclusive,
+        cooldown = args.cooldown,
+        purrs = args.purrs,
+        watches = args.watches,
+        hatched = args.hatched,
+        prestige = args.prestige,
+        prestige_type = args.prestige_type,
+        prestige_ranking = args.prestige_ranking,
+        fancy_ranking = args.fancy_ranking,
+        body = args.body,
+        mouth = args.mouth,
+        eyes = args.eyes,
+        pattern = args.pattern,
+        colorprimary = args.colorprimary,
+        colorsecondary = args.colorsecondary,
+        colortertiary = args.tertiary,
+        coloreyes = args.coloreyes,
+        mother_id = args.mother_id,
+        mother_fancy = args.mother_fancy,
+        mother_exclusive = args.mother_exclusive,
+        father_id = args.father_id,
+        father_fancy = args.father_fancy,
+        father_exclusive = args.father_exclusive,
+        start_price = args.start_price,
+        end_price = args.end_price,
+        current_price = args.current_price,
+        auction_type = args.auction_type,
+        auction_start = args.auction_start,
+        auction_end = args.auction_end,
+        auction_duration = args.auction_duration
+    )
+    db.session.add(kitty)
+    db.session.commit()
+    logger.info("%s added to database", args.name)
 
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(description="Run components of the model source code")
+    # Add parsers for both creating a database and adding songs to it
+    parser = argparse.ArgumentParser(description="Create and/or add data to database")
     subparsers = parser.add_subparsers()
 
     # Sub-parser for creating a database
@@ -71,7 +167,7 @@ if __name__ == '__main__':
     sb_create.set_defaults(func=create_db)
 
     # Sub-parser for ingesting new data
-    sb_ingest = subparsers.add_parser("ingest", description="Add data to database")
+    sb_ingest = subparsers.add_parser("ingest", description="Add kitty to database")
 
     sb_ingest.add_argument("--id", default=0, help="id of kitty")
     sb_ingest.add_argument("--name", default="OG", help="name of kitty")

@@ -11,11 +11,13 @@ logger = logging.getLogger(__name__)
 
 # Set up Boto3
 s3 = boto3.client('s3')
+KITTY_BUCKET = os.environ['KITTY_BUCKET']
 
 # API Settings
+KITTY_TOKEN = os.environ['KITTY_TOKEN']
 payload = "{\n \"dappName\": \"KittyFarm\"\n}"
 headers = {
-        'x-api-token': '07HVm340iA9pO8iu0I3lMMniT21DaNZPVU6chOE7nD8'}
+        'x-api-token': KITTY_TOKEN}
 
 # Get All Kitties
 url = 'https://public.api.cryptokitties.co/v1/kitties'
@@ -45,7 +47,7 @@ while offset < total:
     out = json.dumps(result,indent=2)
     key = "kitties" + str(cntr) + ".json"
 
-    s3.put_object(Bucket='jdc-nu',Key=key,Body=out)
+    s3.put_object(Bucket=KITTY_BUCKET,Key=key,Body=out)
 
     offset = offset + increment
     logger.info("finished call # " + str(cntr))

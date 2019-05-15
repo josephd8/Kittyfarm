@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 # Set up Boto3
 s3 = boto3.client('s3')
+KITTY_BUCKET = os.environ['KITTY_BUCKET']
 
 # API Settings
 KITTY_TOKEN = os.environ['KITTY_TOKEN']
@@ -33,7 +34,7 @@ result = json.loads(response.text)
 
 out = json.dumps(result,indent=2)
 key = "kittySample.json"
-s3.put_object(Bucket='jdc-nu',Key=key,Body=out)
+s3.put_object(Bucket=KITTY_BUCKET,Key=key,Body=out)
 
 logger.info("finished api call to get sample of " + str(sample) + " kitties")
 logger.info("FINISHED SAMPLE KITTIES PROCESS")

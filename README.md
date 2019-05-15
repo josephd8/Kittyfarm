@@ -7,11 +7,14 @@
 - [Documentation](#documentation)
 - [Running the application](#running-the-application)
   * [1. Set up environment](#1-set-up-environment)
-    + [With `virtualenv` and `pip`](#with-virtualenv-and-pip)
+    + [With `virtualenv`](#with-virtualenv)
     + [With `conda`](#with-conda)
+    + [With `make`](#with-make)
   * [2. Configure Flask app](#2-configure-flask-app)
   * [3. Initialize the database](#3-initialize-the-database)
   * [4. Run the application](#4-run-the-application)
+  * [5. Interact with the application](#5-interact-with-the-application)
+- [Creating the trained model object with Make](#creating-the-trained-model-object-with-make)
 - [Testing](#testing)
 
 <!-- tocstop -->
@@ -212,6 +215,22 @@ Therefore, the first time you run `make trained-model`, it will create the featu
 If you change the configurations file, the code files, or the raw data file, it will recreate the trained model object in subsequent runs. 
 
 It is suggested that you version any models and their corresponding configuration files between changes of the configuration YAML or any other dependencies. 
+
+
+## Making predictions 
+
+From the command line, run: 
+
+```bash
+python pennylane.py --config=<path-to-config> --input=<path-to-data-to-score> --output=<path-to-save-data>
+```
+
+or to make predictions with example data inputs and test configuration file: 
+
+```bash
+make predictions
+```
+
 ## Testing 
 
 Run `pytest` from the command line in the main project repository. 

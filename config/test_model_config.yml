@@ -39,23 +39,13 @@ train_model:
   split_data:
     train_size: 0.75
     test_size: 0.25
-#    validate_size: 0.15
     random_state: 24
     save_split_prefix: test/model/test/example-music
-#  params:
-#    max_depth: 10
-#    learning_rate: 5
-#    random_state: 1019
-#  fit:
-#    eval_metric: auc
-#    verbose: True
-  save_tmo: models/example-music-prediction.pkl
+  save_tmo: models/sample/example-music-prediction.pkl
 score_model:
-  path_to_tmo: models/example-music-prediction.pkl
+  path_to_tmo: models/sample/example-music-prediction.pkl
   choose_features:
     features_to_use: [key, beats_start, bars_start, duration, terms, loudness]
-  predict:
-    ntree_limit: 0
   save_scores: test/model/test/example-music-test-scores.csv
 evaluate_model:
   metrics: [auc, accuracy, logloss]

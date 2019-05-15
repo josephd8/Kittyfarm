@@ -175,7 +175,7 @@ def generate_features(df, save_features=None, **kwargs):
     df = choose_features(df, **choose_features_kwargs)
 
     if save_features is not None:
-        df.to_csv(save_features)
+        df.to_csv(save_features, index=False)
 
     return df
 
@@ -186,7 +186,7 @@ def run_features(args):
         config = yaml.load(f)
 
     if args.input is not None:
-        df = pd.read_csv(args.input)
+        df = pd.read_csv(args.input, index_col=0)
     elif "load_data" in config:
         df = load_data(config["load_data"])
     else:
@@ -196,7 +196,7 @@ def run_features(args):
     df = generate_features(df, **config["generate_features"])
 
     if args.output is not None:
-        df.to_csv(args.output)
+        df.to_csv(args.output, index=False)
         logger.info("Features saved to %s", args.output)
 
     return df

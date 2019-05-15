@@ -1,4 +1,4 @@
-.PHONY: test app venv clean clean-pyc clean-env clean-tests trained-model features clouds
+.PHONY: test app venv clean clean-pyc clean-env clean-tests trained-model features clouds predictions
 
 # To reproduce the trained model object, run `make trained-model`
 
@@ -13,6 +13,9 @@ models/example-model.pkl: data/features/example-features.csv src/train_model.py 
 trained-model: models/example-model.pkl
 
 all: features trained-model
+
+predictions:
+	python pennylane.py --config=config/test_model_config.yml --input=data/sample/data_to_score.csv
 
 # Below are some other make functions that do useful things
 

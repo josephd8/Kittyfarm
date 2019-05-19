@@ -27,8 +27,14 @@ pennylane-env/bin/activate: requirements.txt
 
 venv: pennylane-env/bin/activate
 
+# Create the database
+data/tracks.db:
+	python run.py create
+
+database: data/tracks.db
+
 # Run the Flask application
-app:
+app: data/tracks.db
 	python run.py app
 
 # Run all tests

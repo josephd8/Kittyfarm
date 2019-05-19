@@ -1,4 +1,4 @@
-.PHONY: test app venv clean clean-pyc clean-env clean-tests trained-model features clouds predictions
+.PHONY: test app venv clean clean-pyc clean-env clean-tests trained-model features predictions database
 
 # To reproduce the trained model object, run `make trained-model`
 
@@ -34,7 +34,7 @@ data/tracks.db:
 database: data/tracks.db
 
 # Run the Flask application
-app: data/tracks.db
+app: database
 	python run.py app
 
 # Run all tests

@@ -1,3 +1,4 @@
+import traceback
 from flask import render_template, request, redirect, url_for
 import logging.config
 # from app.models import Tracks
@@ -37,6 +38,7 @@ def index():
         logger.debug("Index page accessed")
         return render_template('index.html', tracks=tracks)
     except:
+        traceback.print_exc()
         logger.warning("Not able to display tracks, error page returned")
         return render_template('error.html')
 

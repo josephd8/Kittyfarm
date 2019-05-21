@@ -6,4 +6,5 @@ flask_sqlalchemy==2.3.2
 pytest==4.0.1
 boto3
 requests
-json
+jsonschema==3.0.1
+

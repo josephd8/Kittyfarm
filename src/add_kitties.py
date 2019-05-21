@@ -9,6 +9,8 @@ logger = logging.getLogger(__name__)
 tmp_date = datetime(2019, 6, 8, 3, 53, 11)
 random_id = random.randint(1,10000001)
 
+Base = declarative_base()
+
 def create_db(args):
     """Creates a database with the data model given by obj:`apps.models.Kitty`
 
@@ -19,8 +21,13 @@ def create_db(args):
 
     """
 
-    db.create_all()
+    #db.create_all()
+    engine = create_connection(engine_string=args.engine_string)
 
+    Base.metadata.create_all(engine)
+
+    session = get_session(engine=engine)
+ 
     kitty = Kitty(
         id = args.id, 
         name = args.name,

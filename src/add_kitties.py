@@ -4,6 +4,14 @@ from app import db
 from app.models import Kitty
 import argparse
 import logging.config
+
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, MetaData
+from sqlalchemy.orm import sessionmaker
+
+from src.helpers.helpers import create_connection, get_session
+
+
 logger = logging.getLogger(__name__)
 
 tmp_date = datetime(2019, 6, 8, 3, 53, 11)

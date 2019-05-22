@@ -198,7 +198,7 @@ your AWS Access Key ID and AWS Secret Access Key .
 Configure aws command line tools in order to load files directly to S3 bucket.
 
 ```bash
-pip install aws --upgrade
+pip install awscli --upgrade
 aws configure
 ```
 

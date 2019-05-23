@@ -183,8 +183,8 @@ After filling out the typeform, you will have to wait for them to email you your
 
 #### Set API Token in Environmental Variables
 
-Set your API Token as an environmental variable that the fetch_data.py script will use.
-
+Set your API Token as an environmental variable that the fetch_data.py script will use. Use the "Token" given to you by Cryptokitties, not the "Auth Token".
+ 
 ```bash
 export KITTY_TOKEN=insert_api_token_here
 ```
@@ -212,11 +212,15 @@ export KITTY_BUCKET=insert_bucket_name_here
 
 #### Run fetch_sample_data.py script
 
+The Cryptokitties data is updated as kittie's attributes changed - so calling the API at any time will give you up-to-date kitty info. Thus, there are no time parameters to the API call. In fact, because we are calling the "getKitties" endpoint, the only parameters are `limit` and `offset`, which can be reset within the fetch_sample_data.py script if you would like to get a larger or different sample. 
+
 ```bash
 python src/fetch_sample_data.py
 ```
 
-You should see successful logging messages as the sample data is called and put into your S3 bucket. The sample is a json file with data for 1000 kitties.
+You should see successful logging messages as the sample data is called and put into your S3 bucket. The sample is a json file with data for 1000 kitties. 
+
+It should be noted that the fetch_data.py script will work though a series of calls, each grabbing 5000 kitties at a time, until it has landed each kitties data into the S3 bucket (~1.6 million kitties, ~200 .json files, ~6.5 gb).
 
 ### Configure Flask app
 

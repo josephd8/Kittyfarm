@@ -97,7 +97,6 @@ data/*
 data/features/*
 !data/sample/
 
-models/*
 !models/sample/
 test/test/*
 !.gitkeep

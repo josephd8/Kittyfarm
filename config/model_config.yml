@@ -6,4 +6,5 @@ split: 0.9
 random_state: 13
 method: "gbm"
 metrics: [mae]
-params: {'n_estimators': 500, 'max_depth': 4, 'min_samples_split': 2, 'learning_rate': 0.01, 'loss': 'ls'}
+params: {'n_estimators': 100, 'max_depth': 4, 'min_samples_split': 2, 'learning_rate': 0.01, 'loss': 'ls'}
+transform_target: .0000000000001

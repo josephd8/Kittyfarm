@@ -111,8 +111,8 @@ if __name__ == '__main__':
     sb_score.add_argument('--kitty_id', default=1, help='id of the kitty you want to score')
     sb_score.set_defaults(func=run_scoring)
 
-    # sb_run = subparsers.add_parser("app", description="Run Flask app")
-    # sb_run.set_defaults(func=run_app)
+    sb_run = subparsers.add_parser("app", description="Run Flask app")
+    sb_run.set_defaults(func=run_app)
 
     args = parser.parse_args()
     args.func(args)

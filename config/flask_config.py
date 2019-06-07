@@ -19,5 +19,5 @@ if(ENV == "dev"):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///../data/kitties.db'
     HOME_ENGINE_STRING = 'sqlite:///data/kitties.db'
 else:
-    SQLALCHEMY_DATABASE_URI = 'mysql://rrr:' + os.environ["RDS_PASSWORD"]+ 'kittyrds.caso2ns6uz08.us-east-2.rds.amazonaws.com/kittyrds'
-    HOME_ENGINE_STRING = 'mysql://rrr:' + os.environ["RDS_PASSWORD"]+ 'kittyrds.caso2ns6uz08.us-east-2.rds.amazonaws.com/kittyrds'
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:' + os.environ["RDS_PASSWORD"]+ 'kittyrds.caso2ns6uz08.us-east-2.rds.amazonaws.com/kittyrds'
+    HOME_ENGINE_STRING = 'mysql://root:' + os.environ["RDS_PASSWORD"]+ 'kittyrds.caso2ns6uz08.us-east-2.rds.amazonaws.com/kittyrds'

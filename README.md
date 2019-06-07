@@ -155,7 +155,7 @@ The `requirements.txt` file contains the packages required to run the model code
 #### With `virtualenv`
 
 ```bash
-pip install virtualenv
+pip install virtualenv --user
 
 virtualenv kitty
 
@@ -196,7 +196,7 @@ username in the top right corner. Press `Create Access Key`. Save
 your AWS Access Key ID and AWS Secret Access Key .
 
 Configure aws command line tools in order to load files directly to S3 bucket.
-
+python
 ```bash
 pip install awscli --upgrade
 aws configure

@@ -18,9 +18,12 @@ logger = logging.getLogger(__name__)
 
 methods = dict(gbm=ensemble.GradientBoostingRegressor)
 
-def get_training_data(df):
-
-    return df[df.auction_type == "sale"]
+def get_training_data(df, transform = .0000000000001):
+    
+    df = df[df.auction_type == "sale"]
+    df.loc[:,["current_price"]] = df.loc[:,["current_price"]]*transform
+    
+    return df
 
 def split_data(X, y, random_state = 11, split = 0.9):
 
@@ -105,7 +108,7 @@ def run_training(args):
 
     kitty_data = get_kitty_data(args.engine_string, kitty_id=None)
 
-    training_data = get_training_data(kitty_data)
+    training_data = get_training_data(kitty_data, config["transform_target"])
 
     X = choose_features(training_data, config["features"])
     y = choose_features(training_data, config["target"])

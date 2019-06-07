@@ -112,3 +112,4 @@ test/model/test
 data/features/*
 !data/features/.gitkeep
 !data/auxiliary
+data/*.db

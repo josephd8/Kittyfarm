@@ -37,6 +37,12 @@ def choose_features(df, features_to_use=None):
 
     return X
 
+def get_kitty_image(engine_string, kitty_id=None):
+
+    engine = create_connection(engine_string=engine_string)
+    kitty_image = pd.read_sql("select image from kitties where id = " + str(kitty_id), engine)
+
+    return kitty_image["image"][0]
 
 # def choose_features(df, features_to_use=None, target=None, save_path=None, **kwargs):
 #     """Reduces the dataset to the features_to_use. Will keep the target if provided.

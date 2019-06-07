@@ -8,49 +8,73 @@ import boto3
 import sqlalchemy
 import pandas as pd
 
-from src.load_data import load_data, load_column_as_list
-from src.helpers.helpers import fillin_kwargs
+from src.helpers.helpers import fillin_kwargs, create_connection
 
 logger = logging.getLogger(__name__)
 
+def get_kitty_data(engine_string, kitty_id=None):
 
-def choose_features(df, features_to_use=None, target=None, save_path=None, **kwargs):
-    """Reduces the dataset to the features_to_use. Will keep the target if provided.
+    engine = create_connection(engine_string=engine_string)
 
-    Args:
-        df (:py:class:`pandas.DataFrame`): DataFrame containing the features
-        features_to_use (:obj:`list`): List of columnms to extract from the dataset to be features
-        target (str, optional): If given, will include the target column in the output dataset as well.
-        save_path (str, optional): If given, will save the feature set (and target, if applicable) to the given path.
-        **kwargs:
+    if(kitty_id is None):
 
-    Returns:
-        X (:py:class:`pandas.DataFrame`): DataFrame containing extracted features (and target, it applicable)
-    """
+        kitty_data = pd.read_sql("select * from kitties", engine)
 
-    logger.debug("Choosing features")
-    if features_to_use is not None:
-        features = []
-        dropped_columns = []
-        for column in df.columns:
-            # Identifies if this column is in the features to use or if it is a dummy of one of the features to use
-            if column in features_to_use or column.split("_dummy_")[0] in features_to_use or column == target:
-                features.append(column)
-            else:
-                dropped_columns.append(column)
-
-        if len(dropped_columns) > 0:
-            logger.info("The following columns were not used as features: %s", ",".join(dropped_columns))
-        logger.debug(features)
-        X = df[features]
     else:
-        logger.debug("features_to_use is None, df being returned")
+
+        kitty_data = pd.read_sql("select * from kitties where id = " + str(kitty_id), engine)
+
+    return kitty_data
+
+def choose_features(df, features_to_use=None):
+
+    if features_to_use is not None:
+
+        X = df[features_to_use]
+
+    else:
         X = df
 
-    if save_path is not None:
-        X.to_csv(save_path, **kwargs)
-
     return X
+
+
+# def choose_features(df, features_to_use=None, target=None, save_path=None, **kwargs):
+#     """Reduces the dataset to the features_to_use. Will keep the target if provided.
+
+#     Args:
+#         df (:py:class:`pandas.DataFrame`): DataFrame containing the features
+#         features_to_use (:obj:`list`): List of columnms to extract from the dataset to be features
+#         target (str, optional): If given, will include the target column in the output dataset as well.
+#         save_path (str, optional): If given, will save the feature set (and target, if applicable) to the given path.
+#         **kwargs:
+
+#     Returns:
+#         X (:py:class:`pandas.DataFrame`): DataFrame containing extracted features (and target, it applicable)
+#     """
+
+#     logger.debug("Choosing features")
+#     if features_to_use is not None:
+#         features = []
+#         dropped_columns = []
+#         for column in df.columns:
+#             # Identifies if this column is in the features to use or if it is a dummy of one of the features to use
+#             if column in features_to_use or column.split("_dummy_")[0] in features_to_use or column == target:
+#                 features.append(column)
+#             else:
+#                 dropped_columns.append(column)
+
+#         if len(dropped_columns) > 0:
+#             logger.info("The following columns were not used as features: %s", ",".join(dropped_columns))
+#         logger.debug(features)
+#         X = df[features]
+#     else:
+#         logger.debug("features_to_use is None, df being returned")
+#         X = df
+
+#     if save_path is not None:
+#         X.to_csv(save_path, **kwargs)
+
+#     return X
 
 
 def get_target(df, target, save_path=None, **kwargs):

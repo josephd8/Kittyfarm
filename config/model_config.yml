@@ -1,0 +1,9 @@
+features: ["generation", "fancy", "exclusive", "cooldown", "purrs", "watches", "prestige"]
+target: ["current_price"]
+save_tmo: "models/kitties_model.pkl"
+path_to_tmo: "models/kitties_model.pkl"
+split: 0.9
+random_state: 13
+method: "gbm"
+metrics: [mae]
+params: {'n_estimators': 500, 'max_depth': 4, 'min_samples_split': 2, 'learning_rate': 0.01, 'loss': 'ls'}

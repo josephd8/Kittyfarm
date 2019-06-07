@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 import sklearn
 import yaml
-import matplotlib.pyplot as plt
 from sklearn import ensemble
 from sklearn.utils import shuffle
 from sklearn.metrics import mean_squared_error, mean_absolute_error

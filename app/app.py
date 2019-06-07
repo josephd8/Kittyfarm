@@ -7,6 +7,12 @@ from src.add_kitties import Kitty
 from flask_sqlalchemy import SQLAlchemy
 import pickle
 import yaml
+import sklearn
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import ensemble
+from sklearn.utils import shuffle
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 from src.generate_features import get_kitty_data, choose_features, get_kitty_image
 

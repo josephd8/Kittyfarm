@@ -20,7 +20,6 @@ QA: Jonathan Lewyckyj
   - [Configure Flask app](#2-configure-flask-app)
   - [Initialize the database](#3-initialize-the-database)
   - [Run the application](#4-run-the-application)
-- [Documentation](#documentation)
 - [Testing](#testing)
 
 <!-- tocstop -->
@@ -57,8 +56,8 @@ And Kittyfarm will not stop there! With the probabilities of genes from a simula
 
 * (Data as Engine) API - Assessment of features/data available from the CryptoKitties API.
 * (Data as Engine) Data - Development of dynamic (with time) training, testing, and validation datasets.
-* (Data as Engine, Valuable Predictions) Model - Development of supervised prediction models to predict a baby kitten's genome.
-* (Top-Tier UX) App - Implementation of App to enable user to input gene set and generate prediction.
+* (Data as Engine, Valuable Predictions) Model - Development of supervised prediction models to predict a baby kitten's price.
+* (Top-Tier UX) App - Implementation of App to enable user to input kitty id and generate prediction.
 
 #### Backlog
 
@@ -72,20 +71,20 @@ And Kittyfarm will not stop there! With the probabilities of genes from a simula
 * (Data) - configure RDS instance to store data sets (2) - COMPLETE
 * (Data) - explore the need for S3 instance to relay data from API to RDS (1) - COMPLETE
 * (App) - set up Flask app environment (4) - COMPLETE
-* (Model) - exploratory data analysis to aid in Feature Engineering (1) - PLANNED
-* (Data) - write script that will build datasets dynamically through time (4) - PLANNED
-* (Model) - explore potential models for genome prediction (8) - PLANNED
-* (Model) - develop CV approach to test methods (2) - PLANNED
-* (App) - develop UI to input Kitty gene set (4) - PLANNED
-* (Model) - test models in CV (4) - PLANNED
-* (Model) - productionize final models (4) - PLANNED
-* (App) - develop functionality to export results via email or SMS (4) - PLANNED
+* (Model) - exploratory data analysis to aid in Feature Engineering (1) - COMPLETE
+* (Data) - write script that will build datasets dynamically through time (4) - COMPLETE
+* (Model) - explore potential models for price prediction (8) - COMPLETE
+* (Model) - develop CV approach to test methods (2) - COMPLETE
+* (App) - develop UI to input Kitty id (4) - COMPLETE
+* (Model) - test models in CV (4) - COMPLETE
+* (Model) - productionize final models (4) - COMPLETE
+* (App) - develop functionality to export results via email or SMS (4) - BACKLOG
 
 #### Icebox
 
-* (App) - develop UI to show basic info/summaries on a Kitty in question.
-* (App) - add summary info on the Kittyverse as a whole.
-* (Model) - explore clustering algorithm to identify Kitties that should be priced in the same range, and then single out Kitties that are not priced similarly
+* (App) - develop UI to show basic info/summaries on a Kitty in question. - BACKLOG
+* (App) - add summary info on the Kittyverse as a whole. - BACKLOG
+* (Model) - explore clustering algorithm to identify Kitties that should be priced in the same range, and then single out Kitties that are not priced similarly - BACKLOG
 
 <!--Check out the the rest of the [Project Charter](charter.md) to see the metrics and backlog driving Kittyfarm!-->
 
@@ -162,6 +161,7 @@ virtualenv kitty
 source kitty/bin/activate
 
 pip install -r requirements.txt
+conda install scikit-learn
 
 ```
 
@@ -171,6 +171,7 @@ pip install -r requirements.txt
 conda create -n kitty python=3.7
 conda activate kitty
 pip install -r requirements.txt
+conda install scikit-learn
 
 ```
 
@@ -197,6 +198,7 @@ your AWS Access Key ID and AWS Secret Access Key .
 
 Configure aws command line tools in order to load files directly to S3 bucket.
 python
+
 ```bash
 pip install awscli --upgrade
 aws configure
@@ -208,6 +210,15 @@ Finally, set the S3 bucket name as an environmental variable:
 
 ```bash
 export KITTY_BUCKET=insert_bucket_name_here
+```
+
+#### Configure AWS Access ID & Key
+
+In order to interact with the public s3 bucket, you will need to set your AWS Access ID and AWS Access Key as environmental variables.
+
+```bash
+export AWS_ACCESS_ID=aws_access_id_here
+export AWS_ACCESS_KEY=aws_access_key_here
 ```
 
 #### Run fetch_sample_data.py script
@@ -224,39 +235,72 @@ It should be noted that the fetch_data.py script will work though a series of ca
 
 ### Configure Flask app
 
-`config.py` holds the configurations for the Flask app. It includes the following configurations:
+`config/flask_config.py` holds the configurations for the Flask app. It includes the following configurations:
 
 ```python
+import os
+
+ENV = "dev"
+
 DEBUG = True
 LOGGING_CONFIG = "config/logging/local.conf"
 PORT = 3000
 APP_NAME = "kittyfarm"
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(BASE_DIR, "app/kittyDB.db")
-SQLALCHEMY_DATABASE_URI = 'sqlite:///{}'.format(db_path)
+MODEL_CONFIG = "config/model_config.yml"
+PATH_TO_MODEL = "models/kitties_model.pkl"
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 HOST = "127.0.0.1"
+SQLALCHEMY_ECHO = False  # If true, SQL for queries made will be printed
+MAX_ROWS_SHOW = 100
+
+if(ENV == "dev"):
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///../data/kitties.db'
+    HOME_ENGINE_STRING = 'sqlite:///data/kitties.db'
+else:
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:{}@kittyrds.caso2ns6uz08.us-east-2.rds.amazonaws.com:3306/kittyDB'.format(os.environ["RDS_PASSWORD"])
+    HOME_ENGINE_STRING = 'mysql+pymysql://root:{}@kittyrds.caso2ns6uz08.us-east-2.rds.amazonaws.com:3306/kittyDB'.format(os.environ["RDS_PASSWORD"])
+
 ```
 
 ### Initialize the database
 
-To create the database in the location configured in `config.py` with one initial kitty, run:
+To create the database in the location configured in `config/flask_config.py` with one initial kitty, run:
 
-`python run.py create`
+```bash
+python run.py create
+```
 
-To add additional kitties:
+### Land Kitties in s3 into database
 
-`python run.py ingest --name="KitKittyKitten`
+To parse all of the kitties data out of the json files and into the database, run:
 
-There are many more optional arguments available to use when ingesting a new kitty. See:
+```bash
+python run.py land
+```
 
-`python run.py ingest --help`
+### Train the model to predict kitty price
+
+To train a model using the parameters in `config/model_config.yml`, run:
+
+```bash
+python run.py train
+```
+
+### Score a kitty
+
+To score (predict) a kitty based of the newly trained model, run:
+
+```bash
+python run.py score
+```
 
 ### Run the application
 
- ```bash
- python run.py app
- ```
+Finally, to run the full application, run:
+
+```bash
+python run.py app
+```
 
 ### Interact with the application
 
@@ -267,3 +311,15 @@ Go to [http://127.0.0.1:3000/]( http://127.0.0.1:3000/) to interact with the cur
 Run `pytest` from the command line in the main project repository.
 
 Tests exist in `test/test_helpers.py`
+
+## Moving to EC2
+
+In order to deploy on EC2 using RDS as a database, the following settings must be changed in `config/flask_config.py`:
+
+```python
+ENV = "prod"
+HOST = "0.0.0.0"
+```
+
+You could then follow all of the same instructions.
+

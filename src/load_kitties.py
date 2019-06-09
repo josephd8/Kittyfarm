@@ -179,11 +179,6 @@ def kitties_to_sql(kitties_json, engine_string):
 
 def land_kitties(args):
 
-    print(args.engine_string)
-    print(args.bucket)
-    print(args.access_id)
-    print(args.access_key)
-
     s3 = connect_s3(args.access_id, args.access_key)
 
     files = get_s3_file_names(s3, "s3://jdc-nu")

@@ -20,7 +20,7 @@ methods = dict(gbm=ensemble.GradientBoostingRegressor)
 def get_training_data(df, transform = .0000000000001):
     
     df = df[df.auction_type == "sale"]
-    df.loc[:,["current_price"]] = df.loc[:,["current_price"]]*transform
+    df.loc[:,["current_price"]] = df.loc[:,["current_price"]].astype(float)*transform
     
     return df
 
@@ -40,7 +40,7 @@ def train_model(X_train, y_train, X_test, y_test, method="gbm", save_tmo="models
     model.fit(X_train, y_train)
 
     mae = mean_absolute_error(y_test, model.predict(X_test))
-    print("MSE: %.4f" % mae)
+    print("MAE: %.4f" % mae)
 
     if(save_tmo is not None):
 

@@ -73,6 +73,9 @@ def create_db(args):
     """
 
     engine = create_connection(engine_string=args.engine_string)
+    
+    if(engine.has_table("kitties")):
+        Base.metadata.drop_all(bind=engine, tables=[Kitty.__table__])
 
     Base.metadata.create_all(engine)
 

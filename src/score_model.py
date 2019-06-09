@@ -47,5 +47,5 @@ def run_scoring(args):
     #     raise ValueError("Path to CSV for input data must be provided through --input or "
     #                      "'load_data' configuration must exist in config file")
 
-    y_predicted = score_model(args.engine_string, args.kitty_id, config["path_to_tmo"], config["features"])
+    y_predicted = score_model(args.engine_string, args.kitty_id, config["path_to_tmo"], config["features"])[0]
     print(y_predicted)

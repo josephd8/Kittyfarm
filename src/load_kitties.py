@@ -70,7 +70,12 @@ def parse_attributes(kitty_json):
     cooldown = kitty_json["status"]["cooldown_index"]
     purrs = kitty_json["purrs"]["count"]
     watches = kitty_json["watchlist"]["count"]
-    hatched = kitty_json["hatched"]
+
+    # if("hatched" not in kitty_json):
+    #     hatched = None
+    # else:
+    #     hatched = kitty_json["hatched"]
+
     prestige = kitty_json["is_prestige"]
     prestige_type = kitty_json["prestige_type"]
     prestige_ranking = kitty_json["prestige_ranking"]
@@ -145,7 +150,7 @@ def parse_attributes(kitty_json):
         auction_duration = kitty_json["auction"]["duration"]
     
     return [id, name, image, generation, birthday, color, fancy,
-    fancy_type, exclusive, cooldown, purrs, watches, hatched, 
+    fancy_type, exclusive, cooldown, purrs, watches,
     prestige, prestige_ranking, fancy_ranking, body, mouth, eyes,
     pattern, colorprimary, colorsecondary, colortertiary, coloreyes,
     mother_id, mother_fancy, mother_exclusive, father_id,
@@ -161,7 +166,7 @@ def kitties_to_sql(kitties_json, engine_string):
     kitties_df.drop(0, axis=1)
     
     column_names = ["id", "name", "image", "generation", "birthday", "color", "fancy",
-    "fancy_type", "exclusive", "cooldown", "purrs", "watches", "hatched", 
+    "fancy_type", "exclusive", "cooldown", "purrs", "watches",
     "prestige", "prestige_ranking", "fancy_ranking", "body", "mouth", "eyes",
     "pattern", "colorprimary", "colorsecondary", "colortertiary", "coloreyes",
     "mother_id", "mother_fancy", "mother_exclusive", "father_id",

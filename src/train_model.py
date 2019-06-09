@@ -112,14 +112,8 @@ def run_training(args):
     X = choose_features(training_data, config["features"])
     y = choose_features(training_data, config["target"])
 
-    print(X.columns)
-    print(X.shape)
     X_train, y_train, X_test, y_test = split_data(X, y, random_state = config["random_state"], split = config["split"])
     
-    print(X_train.shape)
-    print(y_train.shape)
-    print(X_test.shape)
-    print(y_test.shape)
     tmo = train_model(X_train, y_train, X_test, y_test, method = config["method"], save_tmo = config["save_tmo"], params = config["params"])
 
 

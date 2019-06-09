@@ -36,7 +36,7 @@ class Kitty(Base):
     cooldown = Column(Integer, unique=False, nullable=True)
     purrs = Column(Integer, unique=False, nullable=True)
     watches = Column(Integer, unique=False, nullable=True)
-    hatched = Column(Boolean, unique=False, nullable=True)
+    # hatched = Column(Boolean, unique=False, nullable=True)
     prestige = Column(Boolean, unique=False, nullable=True)
     prestige_type = Column(String(100), unique=False, nullable=True)
     prestige_ranking = Column(Integer, unique=False, nullable=True)
@@ -110,7 +110,7 @@ def add_kitty(args):
         cooldown = args.cooldown,
         purrs = args.purrs,
         watches = args.watches,
-        hatched = args.hatched,
+        # hatched = args.hatched,
         prestige = args.prestige,
         prestige_type = args.prestige_type,
         prestige_ranking = args.prestige_ranking,
@@ -169,7 +169,7 @@ if __name__ == '__main__':
     sb_ingest.add_argument("--cooldown", default=11, help="cooldown index of kitty")
     sb_ingest.add_argument("--purrs", default=7, help="# of purrs for kitty")
     sb_ingest.add_argument("--watches", default=3, help="# of watches for kitty")
-    sb_ingest.add_argument("--hatched", default=False, help="hatch status of kitty")
+    # sb_ingest.add_argument("--hatched", default=False, help="hatch status of kitty")
     sb_ingest.add_argument("--prestige", default=True, help="prestige status of kitty")
     sb_ingest.add_argument("--prestige_type", default="ThePrestigiest", help="prestige type of kitty")
     sb_ingest.add_argument("--prestige_ranking", default=1, help="prestige ranking of kitty")

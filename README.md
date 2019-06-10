@@ -14,13 +14,18 @@ QA: Jonathan Lewyckyj
     - [Apply for Cryptokitty API credentials](#apply-for-credentials)
     - [Set API Token in Environmental Variables](#set-api-token)
     - [Configure AWS command line tools](#configure-aws)
+    - [Configure AWS Access ID & Key](#configure-aws-access)
   - [Set up environment](#1-set-up-environment)
     - [With `virtualenv` and `pip`](#with-virtualenv-and-pip)
     - [With `conda`](#with-conda)
   - [Configure Flask app](#2-configure-flask-app)
   - [Initialize the database](#3-initialize-the-database)
-  - [Run the application](#4-run-the-application)
+  - [Land Kitties in s3 into database](#4-land-kitties)
+  - [Train the model to predict kitty price](#5-train-model)
+  - [Score a kitty](#6-score-kitty)
+  - [Run the application](#7-run-the-application)
 - [Testing](#testing)
+- [Moving to EC2 (Production)](#production)
 
 <!-- tocstop -->
 
@@ -87,61 +92,6 @@ And Kittyfarm will not stop there! With the probabilities of genes from a simula
 * (Model) - explore clustering algorithm to identify Kitties that should be priced in the same range, and then single out Kitties that are not priced similarly - BACKLOG
 
 <!--Check out the the rest of the [Project Charter](charter.md) to see the metrics and backlog driving Kittyfarm!-->
-
-## Repo structure
-
-```
-├── README.md                         <- You are here
-│
-├── app
-│   ├── static/                       <- CSS, JS files that remain static 
-│   ├── templates/                    <- HTML (or other code) that is templated and changes based on a set of inputs
-│   ├── models.py                     <- Creates the data model for the database connected to the Flask app 
-│   ├── __init__.py                   <- Initializes the Flask app and database connection
-│   ├── kittyDB.db                    <- sqlite database for test/development
-│
-├── config                            <- Directory for yaml configuration files for model training, scoring, etc
-│   ├── logging/                      <- Configuration files for python loggers
-│
-├── data                              <- Folder that contains data used or generated. Only the external/ and sample/ subdirectories are tracked by git. 
-│   ├── archive/                      <- Place to put archive data is no longer usabled. Not synced with git. 
-│   ├── external/                     <- External data sources, will be synced with git
-│   ├── sample/                       <- Sample data used for code development and testing, will be synced with git
-│
-├── docs                              <- A default Sphinx project; see sphinx-doc.org for details.
-│
-├── figures                           <- Generated graphics and figures to be used in reporting.
-│
-├── models                            <- Trained model objects (TMOs), model predictions, and/or model summaries
-│   ├── archive                       <- No longer current models. This directory is included in the .gitignore and is not tracked by git
-│
-├── notebooks
-│   ├── develop                       <- Current notebooks being used in development.
-│   ├── deliver                       <- Notebooks shared with others. 
-│   ├── archive                       <- Develop notebooks no longer being used.
-│   ├── template.ipynb                <- Template notebook for analysis with useful imports and helper functions.
-│
-├── src                               <- Source data for the project 
-│   ├── archive/                      <- No longer current scripts.
-│   ├── helpers/                      <- Helper scripts used in main src files 
-│   ├── sql/                          <- SQL source code
-│   ├── add_kitties.py                  <- Script for creating a (temporary) MySQL database and adding kitties to it
-│   ├── ingest_data.py                <- Script for ingesting data from different sources 
-│   ├── generate_features.py          <- Script for cleaning and transforming data and generating features used for use in training and scoring.
-│   ├── train_model.py                <- Script for training machine learning model(s)
-│   ├── score_model.py                <- Script for scoring new predictions using a trained model.
-│   ├── postprocess.py                <- Script for postprocessing predictions and model results
-│   ├── evaluate_model.py             <- Script for evaluating model performance 
-│   ├── fetch_data.py                 <- Script for fetching data via api and sending to S3 bucket 
-│   ├── fetch_sample_data.py          <- Script for fetching sample data via api and sending to S3 bucket 
-│
-├── test                              <- Files necessary for running model tests (see documentation below) 
-
-├── run.py                            <- Simplifies the execution of one or more of the src scripts 
-├── app.py                            <- Flask wrapper for running the model 
-├── config.py                         <- Configuration file for Flask app
-├── requirements.txt                  <- Python package dependencies 
-```
 
 This project structure was partially influenced by the [Cookiecutter Data Science project](https://drivendata.github.io/cookiecutter-data-science/).
 

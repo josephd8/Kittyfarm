@@ -23,7 +23,7 @@ def get_training_data(df, transform = .0000000000001):
     """Grab training data from SQL"""
     
     df = df[df.auction_type == "sale"]
-    df.loc[:,["current_price"]] = df.loc[:,["current_price"]].astype(float)*transform
+    df.loc[:,["current_price"]] = df.loc[:,["current_price"]].astype(float)*transform # transform the current price variable to a more manageable number
     logger.info("Training data obtained")
     
     return df
@@ -61,20 +61,25 @@ def train_model(X_train, y_train, X_test, y_test, method="gbm", save_tmo="models
         y_train = training response
         X_test = testing X's
         y_test = testing response
+        method = model method - gmb is only model currently available
+        save_tmo = file path to save the trained model object
+        params = model parameters (set in model config yaml)
     
+    Returns:
+        tmo = trained model object
     """
 
-    model = methods[method](**params)
+    model = methods[method](**params) # define the model
 
-    model.fit(X_train, y_train)
+    model.fit(X_train, y_train) # train model
     logger.info("Model has been fit")
 
-    mae = mean_absolute_error(y_test, model.predict(X_test))
+    mae = mean_absolute_error(y_test, model.predict(X_test)) # evaluate MAE
     logger.info("MAE: %.4f" % mae)
 
     if(save_tmo is not None):
 
-        with open(save_tmo, 'wb') as file:
+        with open(save_tmo, 'wb') as file: # save model
             pickle.dump(model, file)
             logger.info("Model saved to " + save_tmo)
 
@@ -86,14 +91,14 @@ def run_training(args):
     with open(args.config, "r") as f:
         config = yaml.load(f)
 
-    kitty_data = get_kitty_data(args.engine_string, kitty_id=None)
+    kitty_data = get_kitty_data(args.engine_string, kitty_id=None) # grab full kitty_data
 
-    training_data = get_training_data(kitty_data, config["transform_target"])
+    training_data = get_training_data(kitty_data, config["transform_target"]) # pull out data available for training
 
     X = choose_features(training_data, config["features"])
     y = choose_features(training_data, config["target"])
 
-    X_train, y_train, X_test, y_test = split_data(X, y, random_state = config["random_state"], split = config["split"])
+    X_train, y_train, X_test, y_test = split_data(X, y, random_state = config["random_state"], split = config["split"]) # split data
     
-    tmo = train_model(X_train, y_train, X_test, y_test, method = config["method"], save_tmo = config["save_tmo"], params = config["params"])
+    tmo = train_model(X_train, y_train, X_test, y_test, method = config["method"], save_tmo = config["save_tmo"], params = config["params"]) # train
 

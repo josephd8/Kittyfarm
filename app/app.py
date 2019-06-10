@@ -27,11 +27,11 @@ logger = logging.getLogger(__name__)
 
 from src.generate_features import get_kitty_data, choose_features, get_kitty_image
 
-with open(app.config["MODEL_CONFIG"], "r") as f:
+with open(app.config["MODEL_CONFIG"], "r") as f: # load the model configurations
     model_config = yaml.load(f)
 
 # Use pickle to load in the pre-trained model.
-with open(app.config["PATH_TO_MODEL"], 'rb') as f:
+with open(app.config["PATH_TO_MODEL"], 'rb') as f: # load the model
     model = pickle.load(f)
 logger.info("Model loaded for app session")
 

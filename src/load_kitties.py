@@ -202,18 +202,18 @@ def land_kitties(args):
     
     """
 
-    s3 = connect_s3(args.access_id, args.access_key)
+    s3 = connect_s3(args.access_id, args.access_key) # make s3 connection
     logger.info("Connected to s3")
 
-    files = get_s3_file_names(s3, "s3://jdc-nu")
+    files = get_s3_file_names(s3, "s3://jdc-nu") # get filenames
     logger.info("Extracted filenames from s3 bucket")
 
     cntr = 0
     logger.info("Parsing kitties to SQL")
     for file in files:
 
-        kitties_json = load_kitty_json(file, s3, args.bucket)
-        kitties_to_sql(kitties_json, args.engine_string)
+        kitties_json = load_kitty_json(file, s3, args.bucket) # load json
+        kitties_to_sql(kitties_json, args.engine_string) # parse and send to sql
 
         cntr = cntr + len(kitties_json["kitties"])
         logger.info(str(cntr) + " kitties have landed")

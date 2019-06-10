@@ -180,12 +180,13 @@ conda install scikit-learn
 #### Apply for Cryptokitty API credentials
 
 Sign up for Cryptokitty API Access here: https://docs.api.cryptokitties.co/view/4668563/RWTrPGvN/?version=latest
+
 After filling out the typeform, you will have to wait for them to email you your api token. They claim that this normally takes ~2-3 days.
 
 #### Set API Token in Environmental Variables
 
 Set your API Token as an environmental variable that the fetch_data.py script will use. Use the "Token" given to you by Cryptokitties, not the "Auth Token".
- 
+
 ```bash
 export KITTY_TOKEN=insert_api_token_here
 ```
@@ -291,7 +292,7 @@ python run.py train
 To score (predict) a kitty based of the newly trained model, run:
 
 ```bash
-python run.py score
+python run.py score --kitty_id=1500000
 ```
 
 ### Run the application

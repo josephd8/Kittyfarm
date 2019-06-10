@@ -1,9 +1,15 @@
 
 import argparse
+import logging
 import logging.config
 import yaml
 import os
 from datetime import datetime
+
+
+from config.flask_config import LOGGING_CONFIG
+logging.config.fileConfig(LOGGING_CONFIG, disable_existing_loggers=False)
+logger = logging.getLogger(__name__)
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, MetaData, DateTime, Boolean, Float
@@ -11,9 +17,6 @@ from sqlalchemy.orm import sessionmaker
 
 from src.helpers.helpers import create_connection, get_session
 
-
-logger = logging.getLogger(__name__)
-logger.setLevel("INFO")
 
 Base = declarative_base()
 
@@ -36,7 +39,6 @@ class Kitty(Base):
     cooldown = Column(Integer, unique=False, nullable=True)
     purrs = Column(Integer, unique=False, nullable=True)
     watches = Column(Integer, unique=False, nullable=True)
-    # hatched = Column(Boolean, unique=False, nullable=True)
     prestige = Column(Boolean, unique=False, nullable=True)
     prestige_type = Column(String(100), unique=False, nullable=True)
     prestige_ranking = Column(Integer, unique=False, nullable=True)
@@ -89,7 +91,7 @@ def add_kitty(args):
     """Seeds an existing database with additional kitty.
 
     Args:
-        args: Argparse args - should include ...
+        args: Argparse args
 
     Returns:None
 
@@ -110,7 +112,6 @@ def add_kitty(args):
         cooldown = args.cooldown,
         purrs = args.purrs,
         watches = args.watches,
-        # hatched = args.hatched,
         prestige = args.prestige,
         prestige_type = args.prestige_type,
         prestige_ranking = args.prestige_ranking,
@@ -143,6 +144,7 @@ def add_kitty(args):
 
 if __name__ == '__main__':
 
+    #temporary date for ingesting an example kitty
     tmp_date = datetime(2019, 6, 8, 3, 53, 11)
 
     # Add parsers for both creating a database and adding a kitty
@@ -169,7 +171,6 @@ if __name__ == '__main__':
     sb_ingest.add_argument("--cooldown", default=11, help="cooldown index of kitty")
     sb_ingest.add_argument("--purrs", default=7, help="# of purrs for kitty")
     sb_ingest.add_argument("--watches", default=3, help="# of watches for kitty")
-    # sb_ingest.add_argument("--hatched", default=False, help="hatch status of kitty")
     sb_ingest.add_argument("--prestige", default=True, help="prestige status of kitty")
     sb_ingest.add_argument("--prestige_type", default="ThePrestigiest", help="prestige type of kitty")
     sb_ingest.add_argument("--prestige_ranking", default=1, help="prestige ranking of kitty")

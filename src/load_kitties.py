@@ -1,4 +1,5 @@
 import logging
+import logging.config
 import os
 import re
 import argparse
@@ -9,12 +10,15 @@ import yaml
 import pandas as pd
 import json
 
+from config.flask_config import LOGGING_CONFIG
+logging.config.fileConfig(LOGGING_CONFIG, disable_existing_loggers=False)
+logger = logging.getLogger(__name__)
+
 import src.helpers.helpers as h
 from src.helpers.helpers import create_connection, get_session
 
-logger = logging.getLogger(__name__)
-
 def connect_s3(access_id, access_key):
+    """Make connection to s3"""
     
     s3 = boto3.resource('s3',
                     aws_access_key_id=access_id,
@@ -49,15 +53,17 @@ def get_s3_file_names(s3, s3_bucket_path):
     return files
 
 def load_kitty_json(file, s3, bucket = "jdc-nu"):
+    """Load kitty json file from s3 to json"""
     
-    obj = s3.Object(bucket,file)
-    file_content = obj.get()['Body'].read().decode('utf-8')
-    json_content = json.loads(file_content)
-    
+    obj = s3.Object(bucket,file) # connect to file
+    file_content = obj.get()['Body'].read().decode('utf-8') # read content
+    json_content = json.loads(file_content) # json format
+
     return json_content
 
 def parse_attributes(kitty_json):
 
+    # grabbing attibutes for the kitty out of the json
     id = kitty_json["id"]
     name = kitty_json["name"]
     image = kitty_json["image_url_png"]
@@ -70,11 +76,6 @@ def parse_attributes(kitty_json):
     cooldown = kitty_json["status"]["cooldown_index"]
     purrs = kitty_json["purrs"]["count"]
     watches = kitty_json["watchlist"]["count"]
-
-    # if("hatched" not in kitty_json):
-    #     hatched = None
-    # else:
-    #     hatched = kitty_json["hatched"]
 
     prestige = kitty_json["is_prestige"]
     prestige_type = kitty_json["prestige_type"]
@@ -159,11 +160,21 @@ def parse_attributes(kitty_json):
     auction_duration]
 
 def kitties_to_sql(kitties_json, engine_string):
+    """Take a json of kitties and ingest into SQL
     
-    kitty_list = [parse_attributes(kitty) for kitty in kitties_json["kitties"]]
+    Args:
+        kitties_json = json containing a "kitties" object
+        engine_string = SQL connection engine string
+
+    Returns:
+        None
+    
+    """
+    
+    kitty_list = [parse_attributes(kitty) for kitty in kitties_json["kitties"]] # parse attributes for each kitty
     
     kitties_df = pd.DataFrame(kitty_list)
-    kitties_df.drop(0, axis=1)
+    kitties_df.drop(0, axis=1) # format dataframe
     
     column_names = ["id", "name", "image", "generation", "birthday", "color", "fancy",
     "fancy_type", "exclusive", "cooldown", "purrs", "watches",
@@ -174,139 +185,38 @@ def kitties_to_sql(kitties_json, engine_string):
     "current_price", "auction_type", "auction_start", "auction_end",
     "auction_duration"]
     
-    kitties_df.columns = column_names
+    kitties_df.columns = column_names # update column names
     
     engine = create_connection(engine_string=engine_string)
     
-    kitties_df.to_sql("kitties", engine, if_exists="append", index = False)
+    kitties_df.to_sql("kitties", engine, if_exists="append", index = False) # ingest to sql
     
     return True
 
 def land_kitties(args):
+    """Land kitties from the cloud to the ground (s3 to SQL)
+
+    Args: argparse args
+
+    Returns: None
+    
+    """
 
     s3 = connect_s3(args.access_id, args.access_key)
+    logger.info("Connected to s3")
 
     files = get_s3_file_names(s3, "s3://jdc-nu")
+    logger.info("Extracted filenames from s3 bucket")
 
     cntr = 0
+    logger.info("Parsing kitties to SQL")
     for file in files:
 
         kitties_json = load_kitty_json(file, s3, args.bucket)
         kitties_to_sql(kitties_json, args.engine_string)
 
         cntr = cntr + len(kitties_json["kitties"])
-        print(cntr)
+        logger.info(str(cntr) + " kitties have landed")
 
+    logger.info("KITTIES HAVE LANDED.")
     return
-
-def get_file_names(top_dir):
-    """Get all file names in a directory subtree
-
-    Args:
-        top_dir (str): The base directory from which to get list_of_files from
-
-    Returns: List of file locations
-
-    """
-
-    if top_dir.startswith("s3://"):
-        list_of_files = get_s3_file_names(top_dir)
-    else:
-        top_dir = top_dir[:-1] if top_dir[-1] == "/" else top_dir
-        list_of_files = glob.glob(top_dir+'/*.csv', recursive=True)
-
-    return list_of_files
-
-
-def load_csv(path, **kwargs):
-    """Wrapper function for `pandas.read_csv()` method to enable multiprocessing.
-
-    """
-    return pd.read_csv(path, **kwargs)
-
-
-def load_column_as_list(path, column=0, **kwargs):
-
-    for k in kwargs:
-        logger.debug(kwargs[k])
-
-    df = pd.read_csv(path, **kwargs)
-
-    return df[column].tolist()
-
-
-def load_csvs(file_names=None, directory=None, n_cores=1):
-    """Loads multiple CSVs into a single Pandas dataframe.
-
-    Given either a directory name (which can be local or an s3 bucket prefix) or a list of CSV files, this function
-    will load all CSVs into a single Pandas DataFrame. It assumes the same schema exists across all CSVs.
-    
-    Args:
-        file_names (list of str, default=None): List of files to load. If None, `directory` should be given. 
-        directory (str, default=None): Directory containing files to be loaded. If None, `filenames` should be given.
-        n_cores (int, default=1): Number of processes (i.e. CPUs) to load csvs on.
-            If -1 given, number of available CPUs will be used. 
-
-    Returns: Single dataframe with data from all files loaded
-
-    """
-
-    # Get list of files
-    if file_names is None and directory is None:
-        raise ValueError("filenames or directory must be given")
-    elif file_names is None:
-        file_names = get_file_names(directory)
-
-    if n_cores == -1:
-        n_cores = multiprocessing.cpu_count()
-
-    logger.info("Utilizing {} cores".format(str(n_cores)))
-
-    with h.Timer("Reading CSVs", logger):
-        pool = multiprocessing.Pool(processes=n_cores)
-
-        df_list = pool.map(load_csv, file_names)
-
-        # Concatenate list of dataframes into one dataframe
-        df = pd.concat(df_list, ignore_index=True)
-
-    return df
-
-
-def load_data(config):
-    how = config["how"].lower()
-
-    if how == "load_csv":
-        if "load_csv" not in config:
-            raise ValueError("'how' given as 'load_csv' but 'load_csv' not in configuration")
-        else:
-            df = load_csv(**config["load_csv"])
-    elif how == "load_csvs":
-        if config["load_csvs"] is None:
-            raise ValueError("'how' given as 'load_csvs' but 'load_csvs' not in configuration")
-        else:
-            df = load_csvs(**config["load_csvs"])
-    else:
-        raise ValueError("Options for 'how' are 'load_csv' and 'load_csvs' but %s was given" % how)
-
-    return df
-
-
-def run_loading(args):
-    """Loads config and executes load data set
-
-    Args:
-        args: From argparse, should contain args.config and optionally, args.save
-            args.config (str): Path to yaml file with load_data as a top level key containing relevant configurations
-            args.save (str): Optional. If given, resulting dataframe will be saved to this location.
-
-    Returns: None
-
-    """
-    with open(args.config, "r") as f:
-        config = yaml.load(f)
-
-    df = load_data(**config["load_data"])
-
-    if args.save is not None:
-        df.to_csv(args.save)

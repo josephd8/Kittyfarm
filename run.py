@@ -12,12 +12,9 @@ from datetime import datetime
 import os
 from config.flask_config import HOME_ENGINE_STRING, MODEL_CONFIG
 
-logger = logging.getLogger(__name__)
-
 # Define LOGGING_CONFIG in config.py - path to config file for setting up the logger (e.g. config/logging/local.conf)
 logging.config.fileConfig(app.config["LOGGING_CONFIG"])
-logger = logging.getLogger("run-kittyfarm")
-logger.debug('Test log')
+logger = logging.getLogger(__name__)
 
 from src.add_kitties import create_db, add_kitty
 from src.load_kitties import land_kitties
@@ -56,7 +53,6 @@ if __name__ == '__main__':
     sb_ingest.add_argument("--cooldown", default=11, help="cooldown index of kitty")
     sb_ingest.add_argument("--purrs", default=7, help="# of purrs for kitty")
     sb_ingest.add_argument("--watches", default=3, help="# of watches for kitty")
-    # sb_ingest.add_argument("--hatched", default=False, help="hatch status of kitty")
     sb_ingest.add_argument("--prestige", default=True, help="prestige status of kitty")
     sb_ingest.add_argument("--prestige_type", default="ThePrestigiest", help="prestige type of kitty")
     sb_ingest.add_argument("--prestige_ranking", default=1, help="prestige ranking of kitty")
@@ -102,6 +98,7 @@ if __name__ == '__main__':
     sb_train = subparsers.add_parser("train", description="Train model")
     sb_train.add_argument('--config', default = MODEL_CONFIG, help='path to yaml file with configurations')
     sb_train.add_argument("--engine_string", default=HOME_ENGINE_STRING, help="SQLAlchemy connection URI for database")
+    
     sb_train.set_defaults(func=run_training)
 
     # # SCORE subparser

@@ -1,4 +1,5 @@
 import logging
+import logging.config
 import argparse
 import yaml
 import os
@@ -8,29 +9,53 @@ import boto3
 import sqlalchemy
 import pandas as pd
 
-from src.helpers.helpers import fillin_kwargs, create_connection
-
+from config.flask_config import LOGGING_CONFIG
+logging.config.fileConfig(LOGGING_CONFIG, disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
 
+from src.helpers.helpers import fillin_kwargs, create_connection
+
 def get_kitty_data(engine_string, kitty_id=None):
+    """Pull kitty data from MySQL into memory
+
+    Args:
+        engine_string = MySQL engine connection string
+        kitty_id = integer kitty id - if specified it will only grab data for that kitty
+
+    Returns:
+        kitty_data = pandas dataframe
+    """
 
     engine = create_connection(engine_string=engine_string)
 
-    if(kitty_id is None):
+    if(kitty_id is None): # pull all kitty data if there is no id
 
         kitty_data = pd.read_sql("select * from kitties", engine)
+        logger.info("Kitty data pulled from SQL")
 
-    else:
+    else: # pull kitty data for one kitty if id is specified
 
         kitty_data = pd.read_sql("select * from kitties where id = " + str(kitty_id), engine)
+        logger.info("Kitty data for kitty # " + str(kitty_id) + " pulled from SQL")
 
     return kitty_data
 
 def choose_features(df, features_to_use=None):
+    """Filter out unwanted features
 
-    if features_to_use is not None:
+    Args: 
+        df: dataframe of kitty data
+        features_to_use: list of features to keep
+
+    Returns:
+        X: pandas dataframe containing filtered kitty data
+
+    """
+
+    if features_to_use is not None: # make sure that features_to_use is specified
 
         X = df[features_to_use]
+        logger.info("Features extracted from the kitty data")
 
     else:
         X = df
@@ -38,196 +63,19 @@ def choose_features(df, features_to_use=None):
     return X
 
 def get_kitty_image(engine_string, kitty_id=None):
+    """Pull kitty image from MySQL into memory
+
+    Args:
+        engine_string = MySQL engine connection string
+        kitty_id = integer kitty id
+
+    Returns:
+        kitty_image = url string
+    """
 
     engine = create_connection(engine_string=engine_string)
     kitty_image = pd.read_sql("select image from kitties where id = " + str(kitty_id), engine)
+    logger.info("Image for kitty # " + str(kitty_id) + " pulled from SQL")
 
     return kitty_image["image"][0]
-
-# def choose_features(df, features_to_use=None, target=None, save_path=None, **kwargs):
-#     """Reduces the dataset to the features_to_use. Will keep the target if provided.
-
-#     Args:
-#         df (:py:class:`pandas.DataFrame`): DataFrame containing the features
-#         features_to_use (:obj:`list`): List of columnms to extract from the dataset to be features
-#         target (str, optional): If given, will include the target column in the output dataset as well.
-#         save_path (str, optional): If given, will save the feature set (and target, if applicable) to the given path.
-#         **kwargs:
-
-#     Returns:
-#         X (:py:class:`pandas.DataFrame`): DataFrame containing extracted features (and target, it applicable)
-#     """
-
-#     logger.debug("Choosing features")
-#     if features_to_use is not None:
-#         features = []
-#         dropped_columns = []
-#         for column in df.columns:
-#             # Identifies if this column is in the features to use or if it is a dummy of one of the features to use
-#             if column in features_to_use or column.split("_dummy_")[0] in features_to_use or column == target:
-#                 features.append(column)
-#             else:
-#                 dropped_columns.append(column)
-
-#         if len(dropped_columns) > 0:
-#             logger.info("The following columns were not used as features: %s", ",".join(dropped_columns))
-#         logger.debug(features)
-#         X = df[features]
-#     else:
-#         logger.debug("features_to_use is None, df being returned")
-#         X = df
-
-#     if save_path is not None:
-#         X.to_csv(save_path, **kwargs)
-
-#     return X
-
-
-def get_target(df, target, save_path=None, **kwargs):
-
-    y = df[target]
-
-    if save_path is not None:
-        y.to_csv(save_path, **kwargs)
-
-    return y.values
-
-
-def bin_values(df, columns, bins=None, quartiles=None, new_column=False, **kwargs):
-    columns = [columns] if type(columns) != list else columns
-
-    if bins is not None and quartiles is not None:
-        raise ValueError("Only bins or quartiles can be done at one time.")
-    elif bins is None and quartiles is None:
-        raise ValueError("Specify bins or quartiles")
-    else:
-        for j, column in enumerate(columns):
-            column_name = "%s_binned" if new_column else column
-            if bins is not None:
-                bins_input = bins[j] if type(bins) == list and len(bins) == len(columns) else bins
-                df[column_name] = pd.cut(df[column], bins=bins_input, labels=range(bins_input))
-            else:
-
-                quartiles_input = quartiles[j] if type(quartiles) == list else quartiles
-                df[column_name] = pd.qcut(df[column], q=quartiles_input, labels=range(quartiles_input))
-
-    return df
-
-
-def make_categorical(df, columns, one_hot=False, **kwargs):
-    columns = [columns] if type(columns) != list else columns
-
-    for column in columns:
-        one_hot_col = False
-        if column in kwargs:
-            if "load_column_as_list" in kwargs[column]:
-                categories = load_column_as_list(**kwargs[column]["load_column_as_list"])
-                logger.info("Categories loaded as %s", ",".join(categories))
-            elif "categories" in kwargs[column]:
-                categories = kwargs[column]["categories"]
-            else:
-                categories = df[column].unique()
-
-            if "one_hot_encode" in kwargs[column] and kwargs[column]["one_hot_encode"]:
-                one_hot_col = True
-
-        df[column] = pd.Categorical(df[column], categories=categories)
-
-        if one_hot or one_hot_col:
-            df = one_hot_encode(df, column)
-
-    return df
-
-
-def one_hot_encode(df, columns, drop_original=True):
-    columns = [columns] if type(columns) != list else columns
-
-    for column in columns:
-        dummies = pd.get_dummies(df[column])
-        dummies.columns = ["%s_dummy_%i" % (column, j) for j in range(len(dummies.columns))]
-        df = pd.concat([df, dummies], axis=1)
-
-    if drop_original:
-        df = df.drop(labels=columns, axis=1)
-
-    return df
-
-
-def drop_na(df, columns=None):
-    """Drops rows of dataframe where there are null values in the columns given.
-
-    Args:
-        df (:py:class:`pandas.DataFrame`): DataFrame containing data
-        columns (str or list of str, optional): Name of column or list of columns for which to drop rows
-            that contain nulls. If None, the original dataframe will be returned.
-
-    Returns:
-        df (:py:class:`pandas.DataFrame`): DataFrame containing only data for which no nulls existed in the columns
-    """
-    if columns is not None:
-        columns = [columns] if type(columns) == str else columns
-        num_nas = df[columns].isna().sum()
-        for col in columns:
-            logger.info("There were %i missing %s values", num_nas.loc[col], col)
-        df_len = len(df)
-        df = df.dropna(subset=columns)
-        logger.warning("%i values were dropped from the dataset because of missing values", df_len - len(df))
-    else:
-        logger.warning("No columns provided for drop_na, original dataframe being returned")
-
-    return df
-
-
-def generate_features(df, save_features=None, **kwargs):
-    """
-
-    Args:
-        df (:py:class:`pandas.DataFrame`): DataFrame containing the data to be transformed into features.
-        save_features (str, optional): If given, the feature set will be saved to this path.
-        **kwargs: Should contain the arguments for each transformation to be performed on the data, `df`.
-            This function assumes each kwarg given except "choose_features" and "get_target" are functions in this file
-            that should be evaluated.
-
-    Returns:
-
-    """
-
-    # Evaluates each function corresponding to a key in `kwargs` and using the key's values as parameters
-    # for that function. The functions "choose_features" and "get_target" are not evaluated until after
-    # this step.
-    for step in kwargs:
-        if step not in ["choose_features", "get_target"]:
-            command = "%s(df, **kwargs[step])" % step
-            logging.debug("Generating feature via %s", command)
-            df = eval(command)
-
-    choose_features_kwargs = fillin_kwargs("choose_features", kwargs)["choose_features"]
-    df = choose_features(df, **choose_features_kwargs)
-
-    if save_features is not None:
-        df.to_csv(save_features, index=False)
-
-    return df
-
-
-def run_features(args):
-    """Orchestrates the generating of features from commandline arguments."""
-    with open(args.config, "r") as f:
-        config = yaml.load(f)
-
-    if args.input is not None:
-        df = pd.read_csv(args.input, index_col=0)
-    elif "load_data" in config:
-        df = load_data(config["load_data"])
-    else:
-        raise ValueError("Path to CSV for input data must be provided through --csv or "
-                         "'load_data' configuration must exist in config file")
-
-    df = generate_features(df, **config["generate_features"])
-
-    if args.output is not None:
-        df.to_csv(args.output, index=False)
-        logger.info("Features saved to %s", args.output)
-
-    return df
 

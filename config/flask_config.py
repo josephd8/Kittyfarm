@@ -1,6 +1,6 @@
 import os
 
-ENV = "staging"
+ENV = "dev"
 
 DEBUG = True
 LOGGING_CONFIG = "config/logging/local.conf"
